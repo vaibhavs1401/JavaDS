@@ -1,0 +1,39 @@
+Class HelloWorldJava {
+    public static void main(String[] args) {
+    System.out.println("Hello World ");
+    }
+}
+
+
+public - access modifier
+
+static - allows to call this method without creating an object of the class
+
+void - function return type
+
+main - name of the function entry point in a Java program
+
+String[] args - command line arguments
+[] - list
+args - it is a list of Strings
+
+Class HelloWorldJava {
+    public static void main(String[] args) {
+    System.out.println("Hello World ");
+    System.out.println(args[0]);
+    }
+}
+
+
+System.out.println("Hello World ")
+
+System - It is a class which provides several usefields and methods. Provide input, output, and error fields.
+out - It is an object of PrintStream class. Represents the standard output stream.
+println - method in PrintStream class
+
+
+
+
+
+
+
