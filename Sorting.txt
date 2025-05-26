@@ -1,0 +1,320 @@
+package com.sunbeam;
+
+public class Heap {
+	private int SIZE;
+	
+	public Heap() {
+		SIZE = 0;
+	}
+	
+	public void addHeap(int arr[]) {
+		for(int i = 1 ; i < arr.length ; i++) {
+			//1. increment size of heap by one
+			SIZE++;
+			//2. adjust position of newly added element by comparing all its ancestors 
+			int ci = SIZE;
+			int pi = ci / 2;
+			while(pi >= 1) {
+				//3. if parent is already maximum than newly added value
+				if(arr[pi] > arr[ci])
+					break;
+				//4. if parent is minimum than newly added value then swap both
+				int temp = arr[pi];
+				arr[pi] = arr[ci];
+				arr[ci] = temp;
+				//5. update indices of parent and child
+				ci = pi;
+				pi = ci / 2;
+			}
+			
+		}
+	}
+	
+	public void deleteHeap(int arr[]) {
+		for(int i = 1 ; i < arr.length ; i++) {
+			//1. swap first and last element of heap
+			int max = arr[1];
+			arr[1] = arr[SIZE];
+			arr[SIZE] = max;
+			//2. decrement size of heap by one
+			SIZE--;
+			//3. adjust position of root upto leaf positions
+			int pi = 1;
+			int ci = pi * 2;
+			while(ci <= SIZE) {
+				//4. find index of maximum child
+				if((ci + 1) <= SIZE && arr[ci + 1] > arr[ci])
+					ci = ci + 1;
+				//5. if parent is already maximum than max child
+				if(arr[pi] > arr[ci])
+					break;
+				//6. if parent is minimum than maximum child, then swap
+				int temp = arr[pi];
+				arr[pi] = arr[ci];
+				arr[ci] = temp;
+				//7. update parent and child index
+				pi = ci;
+				ci = pi * 2;				
+			}
+		}
+	}
+	
+	public void heapSort(int arr[]) {
+		//1. add all elements of array into heap
+		addHeap(arr);
+		//2. delete all elements from heap one by one
+		deleteHeap(arr);
+	}
+
+}
+
+
+----------------------------------------------------
+
+
+
+package com.sunbeam;
+
+import java.util.Arrays;
+
+public class MergeSortMain {
+	
+	public static void mergeSort(int arr[], int left, int right) {
+		//0. stop if partition is invalid or partition has single element
+		if(left >= right)
+			return;
+		//1. divide array into two partitions
+		int mid = (left + right) / 2;
+		//2. sort both partitions individually
+		mergeSort(arr, left, mid);
+		mergeSort(arr, mid + 1, right);
+		//3. merge both partitions into temp array
+		int size = (right - left) + 1;
+		int temp[] = new int[size];
+		int i = left, j = mid + 1, k = 0;
+		while(i <= mid && j <= right) {
+			// compare ith and jth element
+			if(arr[i] < arr[j]) {
+				// put ith element into temp array
+				temp[k] = arr[i];
+				k++;
+				i++;
+			}
+			else {
+				// put jth element into temp array
+				temp[k] = arr[j];
+				k++;
+				j++;
+			}
+		}
+		// if right partition is finished, put remaining elements from left partition into temp
+		while(i <= mid) {
+			temp[k] = arr[i];
+			k++;
+			i++;
+		}
+		// if left partition is finished, put remaining elements from right partition into temp
+		while(j <= right) {
+			temp[k] = arr[j];
+			k++;
+			j++;
+		}
+		//4. over write temp array into original
+		for(i = 0 ; i < size ; i++)
+			arr[left + i] = temp[i];
+	}
+
+	public static void main(String[] args) {
+		int arr[] = {6, 1, 9, 7, 3, 8, 2, 4, 5};
+		
+		System.out.println("Array before sort : " + Arrays.toString(arr));
+		
+		mergeSort(arr, 0, arr.length-1);
+		
+		
+		System.out.println("Array after sort : " + Arrays.toString(arr));
+
+	}
+
+}
+
+
+
+----------------------------
+
+
+
+package com.sunbeam;
+
+import java.util.Arrays;
+
+public class QuickSortMain {
+	
+	public static void quickSort(int arr[], int left, int right) {
+		//0. stop if single element or invalid partition
+		if(left >= right)
+			return;
+		//1. choose pivot element
+		//int pivot = arr[left];
+		//2. do the arrangement of elements
+		int i = left, j = right;
+		while(i < j) {
+			//2.1 find element greater than pivot
+			for( ; i <= right && arr[i] <= arr[left] ; i++);
+			//2.2 find element less or equal than pivot
+			for( ; arr[j] > arr[left] ; j--);
+			//2.3 swap ith and jth element if they are not crossed
+			if(i < j) {
+				int temp = arr[i];
+				arr[i] = arr[j];
+				arr[j] = temp;
+			}
+		}
+		//2.4 if j and j are crossed, swap jth element with pivot
+		int temp = arr[left];
+		arr[left] = arr[j];
+		arr[j] = temp;
+		//3. sort left and right partition of pivot individually
+		quickSort(arr, left, j-1);
+		quickSort(arr, j+1, right);
+	}
+
+	public static void main(String[] args) {
+		int arr[] = {66, 33, 99, 11, 77, 22, 55, 66, 88};
+		
+		
+		System.out.println("Before sort : " + Arrays.toString(arr));
+		
+		quickSort(arr, 0, arr.length-1);
+		
+		System.out.println("After sort : " + Arrays.toString(arr));
+
+	}
+
+}
+
+
+
+-----------------------------------------
+
+
+package com.sunbeam;
+
+import java.util.Arrays;
+
+public class BubbleSortMain {
+	
+	public static void bubbleSort(int arr[], int N) {
+		int passes = 0, comps = 0;
+		//1. Repeat procedure N-1 times(passes)
+		for(int i = 1 ; i < N ; i++) {
+			passes++;
+			//2. compare all pairs of consecutive elements
+			for(int j = 0 ; j < N - i ; j++) {
+				// left element = j
+				// right element = j + 1
+				//3. if left element is greater than right element then swap both
+				comps++;
+				if(arr[j] > arr[j+1]) {
+					int temp = arr[j];
+					arr[j] = arr[j+1];
+					arr[j+1] = temp;
+				}
+			}
+		}
+		System.out.println("No of passes : " + passes);
+		System.out.println("No of comps : " + comps);
+	}
+	
+	public static void improvedBubbleSort(int arr[], int N) {
+		int passes = 0, comps = 0;
+		int flag;
+		//1. Repeat procedure N-1 times(passes)
+		for(int i = 1 ; i < N ; i++) {
+			flag = 0;
+			passes++;
+			//2. compare all pairs of consecutive elements
+			for(int j = 0 ; j < N - i ; j++) {
+				// left element = j
+				// right element = j + 1
+				//3. if left element is greater than right element then swap both
+				comps++;
+				if(arr[j] > arr[j+1]) {
+					int temp = arr[j];
+					arr[j] = arr[j+1];
+					arr[j+1] = temp;
+					flag = 1;
+				}
+			}
+			if(flag == 0)
+				break;
+		}
+		System.out.println("No of passes : " + passes);
+		System.out.println("No of comps : " + comps);
+	}
+
+	public static void main(String[] args) {
+		//int arr[] = {33, 22, 66, 55, 44, 11};
+		int arr[] = {11, 22, 33, 44, 55, 66};
+		
+		System.out.println("Before sort : " + Arrays.toString(arr));
+		
+		//bubbleSort(arr, arr.length);
+		improvedBubbleSort(arr, arr.length);
+		
+		System.out.println("After sort : " + Arrays.toString(arr));
+	}
+
+}
+
+
+-------------------------------------------------
+
+
+
+package com.sunbeam;
+
+import java.util.Arrays;
+
+public class InsertionSortMain {
+	
+	public static void insertionSort(int arr[], int N) {
+		//1. pick elements of array one by one starting from 2nd element
+		for(int i = 1 ; i < N ; i++) {
+			int temp = arr[i];
+			int j;
+			//2. compare picked element with left neighbours
+			for(j = i - 1 ; j >= 0 ; j--) {
+				//3. if left neighbour is greater than picked element then move it
+				if(arr[j] > temp) 
+					arr[j+1] = arr[j];
+				else
+					break;
+			}
+			//4. insert picked element at its appropriate position
+			arr[j+1] = temp;
+		}
+		
+	}
+
+	public static void main(String[] args) {
+		int arr[] = {55, 44, 22, 66, 11, 33};
+		
+		System.out.println("Before sort : " + Arrays.toString(arr));
+		
+		insertionSort(arr, arr.length);
+		
+		System.out.println("After sort : " + Arrays.toString(arr));
+	}
+
+}
+
+
+
+
+
+
+
+
+
+---------------------------------------------------------

@@ -1,0 +1,229 @@
+Pre Order VLR
+
+In Order LVR
+
+Post Order LRV
+
+
+
+Prefix Eval
+
+
+
+package question4;
+
+import java.util.Stack;
+
+public class PostfixEvaluation {
+	
+	public static int calculate(int op1, char opr, int op2) {
+		switch(opr) {
+			case '+': return op1 + op2;
+			case '-': return op1 - op2;
+			case '*': return op1 * op2;
+			case '/': return op1 / op2;
+			case '%': return op1 % op2;
+			case '$': return (int)Math.pow(op1, op2);		
+			default: throw new IllegalArgumentException("Invalid operator: " + opr);
+		}
+	}
+	
+	public static int Eval(String[] split) {
+		Stack<Integer> st = new Stack<>();
+		for (String token : split) {
+			if (token.matches("-?\\d+")) { 
+				st.push(Integer.parseInt(token));
+			} else if (token.length() == 1) { 
+				char opr = token.charAt(0);
+				int op2 = st.pop();
+				int op1 = st.pop();
+				int res = calculate(op1, opr, op2);
+				st.push(res);
+			} else {
+				throw new IllegalArgumentException("Invalid token: " + token);
+			}
+		}
+		return st.pop();
+	}
+	
+	public static void main(String[] args) {
+		String postfix = "45 6 * 31 / 19 + 7 -";
+		System.out.println("Postfix: " + postfix);
+		String[] split = postfix.split(" ");
+		int result = Eval(split);
+		System.out.println("Result: " + result);
+	}
+}
+
+
+
+
+---------------------------------------------------------
+
+
+
+
+aq	package question4;
+
+import java.util.Stack;
+
+public class PrefixEvaluation {
+	
+	public static int calculate(int op1, char opr, int op2) {
+		switch (opr) {
+			case '+': return op1 + op2;
+			case '-': return op1 - op2;
+			case '*': return op1 * op2;
+			case '/': return op1 / op2;
+			case '%': return op1 % op2;
+			case '$': return (int) Math.pow(op1, op2);
+			default: throw new IllegalArgumentException("Invalid operator: " + opr);
+		}
+	}
+	
+	public static int Eval(String[] split) {
+		Stack<Integer> st = new Stack<>();
+		
+		for (int i = split.length - 1; i >= 0; i--) {
+			String token = split[i];
+			
+			if (token.matches("-?\\d+")) {
+				st.push(Integer.parseInt(token));
+			} else if (token.length() == 1) {
+				char opr = token.charAt(0);
+				if (st.size() < 2) {
+					throw new IllegalStateException("Not enough operands for operator: " + opr);
+				}
+				int op1 = st.pop();
+				int op2 = st.pop();
+				int res = calculate(op1, opr, op2);
+				st.push(res);
+			} else {
+				throw new IllegalArgumentException("Invalid token: " + token);
+			}
+		}
+		return st.pop();
+	}
+	
+	public static void main(String[] args) {
+		String prefix = "- + / * 45 6 31 19 7";  
+		System.out.println("Prefix: " + prefix);
+		String[] split = prefix.split(" ");
+		int result = Eval(split);
+		System.out.println("Result: " + result);
+	}
+}
+
+--------------------------------------------------------------------------------------------------------------------
+
+
+
+package com.sunbeam;
+
+import java.util.Stack;
+
+public class ExpressionConversionMain {
+	public static int priority(char opr) {
+		switch(opr) {
+		case '$':	return 10;
+		case '/':	return 9;
+		case '*':	return 9;
+		case '%':	return 9;
+		case '+':	return 8;
+		case '-':	return 8;
+		}
+		return 0;
+	}
+	
+	public static String infixToPostfix(String infix) {
+		//0. create stack to push operators
+		Stack<Character> st = new Stack<Character>();
+		//0. create string to store postfix expression
+		StringBuilder expr = new StringBuilder();
+		//1. traverse from left to right
+		for(int i = 0 ; i < infix.length() ; i++) {
+			//2. extract ith index element 
+			char ele = infix.charAt(i);
+			//3. if element is operand
+			if(Character.isDigit(ele))
+				expr.append(ele);
+			//4. if element is '('
+			else if(ele == '(')
+				st.push(ele);
+			//5. if element is ')'
+			else if(ele == ')') {
+				while(st.peek() != '(')
+					expr.append(st.pop());
+				st.pop();		// to discard '('
+			}
+			//6. if element is operator
+			else {
+				while(!st.isEmpty() && priority(st.peek()) >= priority(ele))
+					expr.append(st.pop());
+				// push current operator on stack
+				st.push(ele);
+			}
+		}
+		// pop remaining operators from stack and append into expr
+		while(!st.isEmpty())
+			expr.append(st.pop());
+		// return final postfix expression
+		return expr.toString();
+	}
+	
+	public static String infixToPrefix(String infix) {
+		//0. create stack to push operators
+		Stack<Character> st = new Stack<Character>();
+		//0. create string to store prefix expression
+		StringBuilder expr = new StringBuilder();
+		//1. traverse from right to left
+		for(int i = infix.length()-1 ; i >= 0 ; i--) {
+			//2. extract ith index element 
+			char ele = infix.charAt(i);
+			//3. if element is operand
+			if(Character.isDigit(ele))
+				expr.append(ele);
+			//4. if element is '('
+			else if(ele == ')')
+				st.push(ele);
+			//5. if element is ')'
+			else if(ele == '(') {
+				while(st.peek() != ')')
+					expr.append(st.pop());
+				st.pop();		// to discard '('
+			}
+			//6. if element is operator
+			else {
+				while(!st.isEmpty() && priority(st.peek()) > priority(ele))
+					expr.append(st.pop());
+				// push current operator on stack
+				st.push(ele);
+			}
+		}
+		// pop remaining operators from stack and append into expr
+		while(!st.isEmpty())
+			expr.append(st.pop());
+		// reverse string to get prefix expr
+		expr.reverse();
+		// return final prefix expression
+		return expr.toString();
+	}
+
+	public static void main(String[] args) {
+		String infix = "1$9+3*4-(6+8/2)+7";
+		
+		System.out.println("Infix : " + infix);
+		String postfix = infixToPostfix(infix);
+		System.out.println("Postfix : " + postfix);
+		
+		String prefix = infixToPrefix(infix);
+		System.out.println("Prefix : " + prefix);
+	}
+
+}
+
+
+
+
+
+------------------------------------------------------------------------------------------------

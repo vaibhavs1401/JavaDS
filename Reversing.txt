@@ -1,0 +1,90 @@
+    public void reverse() {
+        Node prev = null;
+        Node curr = head;
+        Node next = null;
+
+        while (curr != null) {
+            next = curr.next;  // store next
+            curr.next = prev;  // reverse link
+            prev = curr;       // move prev
+            curr = next;       // move curr
+        }
+        head = prev;  // update head to new front
+    }
+
+-------------------------------------------   
+
+ public void reverse() {
+        Node current = head;
+        Node temp = null;
+
+        // Swap next and prev for all nodes
+        while (current != null) {
+            // Swap next and prev
+            temp = current.prev;
+            current.prev = current.next;
+            current.next = temp;
+
+            // Move to next node (which is prev in original)
+            current = current.prev;
+        }
+
+        // After loop, temp will point to the new head's prev (i.e. old tail)
+        if (temp != null) {
+            head = temp.prev;
+        }
+    }
+---------------------------------------------------------------------
+
+
+
+public void reverse() {
+    if (head == null || head.next == head) return;
+
+    Node prev = null;
+    Node current = head;
+    Node next;
+
+    // Find tail (last node pointing to head)
+    Node tail = head;
+    while (tail.next != head) {
+        tail = tail.next;
+    }
+
+    do {
+        next = current.next;
+        current.next = prev;
+        prev = current;
+        current = next;
+    } while (current != head);
+
+    // Fix the circular link
+    head.next = prev;
+    head = prev;
+}
+
+-----------------------------------------------------------------------
+
+
+    public void reverse() {
+        if (head == null || head.next == head)
+            return;
+
+        Node current = head;
+        Node temp;
+
+        do {
+            // Swap prev and next
+            temp = current.next;
+            current.next = current.prev;
+            current.prev = temp;
+
+            // Move to next (which is prev due to swap)
+            current = temp;
+        } while (current != head);
+
+        // Update head to the new front (previous tail)
+        head = head.prev;
+    }
+
+
